@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>R Crawler Crash Course</title>
+  <meta charset="utf-8">
+  <meta name="description" content="R Crawler Crash Course">
+  <meta name="author" content="Chih-Ping Chao, Chia-Chi Chang">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="http://slidifylibraries2.googlecode.com/git/inst/libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="http://slidifylibraries2.googlecode.com/git/inst/libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/js/slides" 
+    src="http://slidifylibraries2.googlecode.com/git/inst/libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>R Crawler Crash Course</h1>
+    <h2></h2>
+    <p>Chih-Ping Chao, Chia-Chi Chang<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>R Markdown</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com">http://rmarkdown.rstudio.com</a>.</p>
+
+<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
+
+<pre><code class="r">summary(cars)
+</code></pre>
+
+<pre><code>##      speed           dist       
+##  Min.   : 4.0   Min.   :  2.00  
+##  1st Qu.:12.0   1st Qu.: 26.00  
+##  Median :15.0   Median : 36.00  
+##  Mean   :15.4   Mean   : 42.98  
+##  3rd Qu.:19.0   3rd Qu.: 56.00  
+##  Max.   :25.0   Max.   :120.00
+</code></pre>
+
+<h2>Including Plots</h2>
+
+<p>You can also embed plots, for example:</p>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk pressure"> </p>
+
+<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='R Markdown'>
+         1
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="http://slidifylibraries2.googlecode.com/git/inst/libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
