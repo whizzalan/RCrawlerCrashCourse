@@ -231,29 +231,25 @@ doc_str <- content(res, type = "text", encoding = "utf8")
 
 # parser with URL
 html <- read_html(doc_str)
-monthsUrl <- html_nodes(html,"table[summary='信用卡重要業務及財務資訊揭露'] a[href]")
-
-# get value 
-html_text(monthsUrl)
-html_attr(monthsUrl, name = "href")
+monthsUrl <- html_nodes(html,xpath = "//table//table[1]//td[@class='c001']/table//a[@title]") %>% html_attr("title")
 
 # pipe to url
-monthsUrlList <- content(res, type = "text", encoding = "utf8") %>% read_html %>% html_nodes("table[summary='信用卡重要業務及財務資訊揭露'] a") %>% html_attr("href")
+monthsUrlList <- content(res, type = "text", encoding = "utf8") %>% read_html %>% html_nodes(xpath = "//table//table[1]//td[@class='c001']/table//a") %>% html_attr("href")
 monthsUrlList <- ifelse(substr(monthsUrlList,1,1)=='/',paste0("http://www.fsc.gov.tw",monthsUrlList),monthsUrlList)
 
 # gen url
-dataDir <- "/home/gg/data/bankingCreditCard/"
+dataDir <- paste0(getwd(),"/bankingCreditCard/")
 fileName <- paste0(dataDir,fileName <- sub("&flag=doc$","",sub(".*file=/", "", monthsUrlList)))
 
 # cal time
 system.time(
   for (i in 1:length(fileName)){
     print(monthsUrlList[i])
-    try(download.file(url = monthsUrlList[i], destfile = fileName[i], mode = "w"), silent = TRUE)
+    try(download.file(url = URLencode(monthsUrlList[i]), destfile = fileName[i], mode = "wb"), silent = TRUE)
   }
 )
 
-# data size
+## data size
 sum((fileName %>% file.info)$size)
 ```
 
