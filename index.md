@@ -1,9 +1,25 @@
 ---
 title: "R Crawler Crash Course"
+subtitle: Week 1
 author: "Chih-Ping Chao, Chia-Chi Chang"
 date: "December 14, 2015"
 output: html_document
 ---
+
+<h1>
+  <font color=#005CE6>R Basic with Web Crawler</font>
+</h1>
+<h3>
+  <font color="green">Week 1</font>
+</h3>
+<h3>
+  <font color=#CCCCA3>Agilearning.IO</font>
+</h3>
+
+<h3>
+  <font color=#CCCCA3>木刻思股份有限公司</font>
+</h3>
+
 
 
 

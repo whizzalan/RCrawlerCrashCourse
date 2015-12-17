@@ -1,31 +1,183 @@
 ---
-title: "R Crawler Crash Course"
-subtitle: Week 1
-author: "Chih-Ping Chao, Chia-Chi Chang"
-date: "December 14, 2015"
+title:  "<font color=#005CE6> R Crawler Crash Course </font>"
+subtitle: <font color="green">Week 1</font>
+author: 
+    name: "Chih-Ping Chao, Chia-Chi Chang"
+    affiliation: <font color=#22dbea>木刻思股份有限公司</font>
+    email: "course@agilearning.io, george@data-sci.info"
+    website: "http://agilearning.io, https://github.com/whizzalan"
+date: "December 18, 2015"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(cache=TRUE)
+options(width=120)
+# library(RColorBrewer)
+# library(wordcloud)
+# library(ggplot2)
+library(data.table)
+library(magrittr)
+library(parallel)
+library(stringr)
+library(rvest)
+library(httr)
+# rmarkdown::render("index.Rmd")
 ```
 
-## R Markdown
+## Hello ^R(Studio)?$
+
+```{r RStudio}
+grep("^R(Studio)?$", c("R","RStudio","Studio","R!", "abcR","RS","RStu","RStudioStudio"), value = TRUE)
+```
+
+## R Basic Syntax 
+
+### Install packages
+
+```{r install, eval = FALSE}
+## install packages
+packages_w1 <- c("rvest","stringr","selectr","quantmod","devtools","rjson","jsonlite","rlist","magrittr","pipeR")
+install.package(packages_w1)
+## load package
+library(magrittr)
+library(rvest)
+library(httr)
+library(devtools)
+## load all
+sapply(packages_w1,library,character.only=TRUE)
+```
+
+### Useful functions to know data profile
+
+```{r view data}
+## View Data
+head(iris)
+tail(iris)
+# View(iris)
+summary(iris)
+
+## explor object
+attributes(iris)
+str(iris)
+class(iris)
+
+## data shape
+dim(iris)
+ncol(iris)
+nrow(iris)
+
+```
+
+### [DEMO] How to get string variable ?
+
+```{r demo view data, eval=FALSE}
+# install.packages("quantmod")
+library(quantmod)
+
+# quantmod::getSymbols 
+getSymbols("2330.TW")
+## What's wrong? ##
+View(2330.TW)
+View(getSymbols("2330.TW"))
+TW_2330 <- getSymbols("2330.TW")
+
+# get("2330.TW")
+
+head(TW_2330)
+tail(TW_2330)
+View(TW_2330)
+summary(TW_2330)
+
+dim(TW_2330)
+ncol(TW_2330)
+nrow(TW_2330)
+```
+
+### Assign string variable
+
+```{r Assign, eval=FALSE}
+a <- 1:4
+assign("a[1]", 2)
+a[1] == 2          # FALSE
+get("a[1]") == 2   # TRUE
+```
+
+### Setting env
+
+```{r knew env}
+head(ls())
+getwd()
+# setwd("~/works/RCrawler/RCrawlerCrashCourse")
+
+# quantmod::
+# quantmod:::
+
+source("install_packages.r")
+packages_w2
+
+```
+
+### Controller & function
+
+```{r RCourse Fake,eval=FALSE}
+RCourseDate <- c("2015-12-18","2016-01-04","2016-01-13","2016-01-29")
+Today <- Sys.Date()
+ifelse(Today %in% RCourseDate,"開薰學R語言","今日打東東")
+```
+
+```{r RCourse Real,echo=FALSE}
+RCourseDate <- c("2015-12-18","2016-01-04","2016-01-13","2016-01-29")
+Today <- RCourseDate[1]
+ifelse(Today %in% RCourseDate,"開薰學R語言","今日打東東")
+```
+
+```{r do.call}
+NormalSampleData <- function(N,mu){rnorm(N)+ mu}
+system.time(for(i in 1:1e5) NormalSampleData(100,0))
+system.time(for(i in 1:1e5) do.call(NormalSampleData, list(100,0)))
+
+```
+
+## [DEMO] Connector & Parser
+
+1. Yahoo Stock <http://tw.stock.yahoo.com/d/s/major_2451.html>
+
+```{r Yahoo Stock}
+library(httr)
+library(rvest)
+library(stringr)
+
+## Connector
+Target_URL = "http://tw.stock.yahoo.com/d/s/major_2451.html"
+res <- GET(Target_URL)
+doc_str <- content(res, type = "text", encoding = "big5")
+
+## Parser
+data_table <- doc_str %>% read_html(encoding = "utf8") %>% html_nodes(xpath = "//table[1]//table[2]") %>% html_table(header=TRUE)
+
+# View(data_table[[1]])
+
+```
+
+2. 公開資訊觀測站
+
+```{r mops}
+library(httr)
+library(rvest)
+## Connector
+res <- POST("http://mops.twse.com.tw/mops/web/ajax_t51sb01",body = "encodeURIComponent=1&step=1&firstin=1&TYPEK=sii&code=")
+doc_str <- content(res, "text", encoding = "utf8")
+write(doc_str, file = "mops.html")
+## Parser
+data_table <- doc_str %>% read_html(encoding = "utf8") %>% html_nodes(xpath = "//table[2]") %>% html_table(header=TRUE)
+
+View(data_table)
+```
+
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
-```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
