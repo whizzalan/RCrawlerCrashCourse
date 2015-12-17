@@ -173,7 +173,6 @@ Pipe argument to right-hand side with `%>%`
 ```{r Yahoo Stock}
 library(httr)
 library(rvest)
-library(stringr)
 
 ## Connector
 Target_URL = "http://tw.stock.yahoo.com/d/s/major_2451.html"
@@ -203,7 +202,7 @@ data_table <- doc_str %>% read_html(encoding = "utf8") %>% html_nodes(xpath = "/
 
 3. 銀行局 <http://goo.gl/88rBJz>
 
-```{r bank}
+```{r bank, eval=FALSE}
 library(rvest)
 library(httr)
 bankingUrl <- "http://www.banking.gov.tw/ch/home.jsp?id=192&parentpath=0,4&mcustomize=multimessage_view.jsp&dataserno=21207&aplistdn=ou=disclosure,ou=multisite,ou=chinese,ou=ap_root,o=fsc,c=tw&toolsflag=Y&dtable=Disclosure"

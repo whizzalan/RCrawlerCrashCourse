@@ -82,7 +82,7 @@ img {
 <h3>Install packages</h3>
 <pre class="r"><code>## install packages
 packages_w1 &lt;- c(&quot;rvest&quot;,&quot;stringr&quot;,&quot;selectr&quot;,&quot;quantmod&quot;,&quot;devtools&quot;,&quot;rjson&quot;,&quot;jsonlite&quot;,&quot;rlist&quot;,&quot;magrittr&quot;,&quot;pipeR&quot;)
-install.package(packages_w1)
+install.packages(packages_w1)
 ## load package
 library(magrittr)
 library(rvest)
@@ -240,7 +240,6 @@ httr::POST(URL, body= &quot;para1=paraVal1_encode&amp;para2=paraVal2_encode&quot
 </ol>
 <pre class="r"><code>library(httr)
 library(rvest)
-library(stringr)
 
 ## Connector
 Target_URL = &quot;http://tw.stock.yahoo.com/d/s/major_2451.html&quot;
@@ -252,7 +251,7 @@ data_table &lt;- doc_str %&gt;% read_html(encoding = &quot;utf8&quot;) %&gt;% ht
 
 # View(data_table[[1]])</code></pre>
 <ol start="2" style="list-style-type: decimal">
-<li>公開資訊觀測站</li>
+<li>公開資訊觀測站 <a href="http://mops.twse.com.tw/mops/web/t51sb01" class="uri">http://mops.twse.com.tw/mops/web/t51sb01</a></li>
 </ol>
 <pre class="r"><code>library(httr)
 library(rvest)
@@ -265,7 +264,7 @@ data_table &lt;- doc_str %&gt;% read_html(encoding = &quot;utf8&quot;) %&gt;% ht
 
 # View(data_table)</code></pre>
 <ol start="3" style="list-style-type: decimal">
-<li>銀行局</li>
+<li>銀行局 <a href="http://goo.gl/88rBJz" class="uri">http://goo.gl/88rBJz</a></li>
 </ol>
 <pre class="r"><code>library(rvest)
 library(httr)
@@ -275,36 +274,31 @@ res &lt;- GET(bankingUrl,set_cookies(&quot;cookiesession1=0F51E397POLJ4NQTC2CT7T
 doc_str &lt;- content(res, type = &quot;text&quot;, encoding = &quot;utf8&quot;)
 
 # parser with URL
-doc &lt;- htmlParse(doc_str)
-library(rvest)
 html &lt;- read_html(doc_str)
 monthsUrl &lt;- html_nodes(html,&quot;table[summary='信用卡重要業務及財務資訊揭露'] a[href]&quot;)
+
 # get value 
 html_text(monthsUrl)
 html_attr(monthsUrl, name = &quot;href&quot;)
+
 # pipe to url
 monthsUrlList &lt;- content(res, type = &quot;text&quot;, encoding = &quot;utf8&quot;) %&gt;% read_html %&gt;% html_nodes(&quot;table[summary='信用卡重要業務及財務資訊揭露'] a&quot;) %&gt;% html_attr(&quot;href&quot;)
 monthsUrlList &lt;- ifelse(substr(monthsUrlList,1,1)=='/',paste0(&quot;http://www.fsc.gov.tw&quot;,monthsUrlList),monthsUrlList)
 
-# library(stringr)
+# gen url
 dataDir &lt;- &quot;/home/gg/data/bankingCreditCard/&quot;
 fileName &lt;- paste0(dataDir,fileName &lt;- sub(&quot;&amp;flag=doc$&quot;,&quot;&quot;,sub(&quot;.*file=/&quot;, &quot;&quot;, monthsUrlList)))
-# download.file(monthsUrlList, destfile = paste0(&quot;/home/gg/data/bankingCreditCard/&quot;,fileName &lt;- sub(&quot;&amp;flag=doc$&quot;,&quot;&quot;,sub(&quot;.*file=/&quot;, &quot;&quot;, monthsUrlList[1:2]))), mode=&quot;wb&quot;)
+
+# cal time
 system.time(
   for (i in 1:length(fileName)){
     print(monthsUrlList[i])
     try(download.file(url = monthsUrlList[i], destfile = fileName[i], mode = &quot;w&quot;), silent = TRUE)
   }
 )
-sum((fileName %&gt;% file.info)$size)
 
-# downUrl &lt;- &quot;http://www.fsc.gov.tw/fckdowndoc?file=/10401%E4%BF%A1%E7%94%A8%E5%8D%A1%E9%87%8D%E8%A6%81%E8%B3%87%E8%A8%8A%E6%8F%AD%E9%9C%B2.xlsx&amp;amp;flag=doc&quot;
-# res &lt;- GET(downUrl, set_cookies(&quot;cookiesession1=0F51E398BEEWSI59SDWDYRPYSQEYAAD7;Path=/;HttpOnly&quot;))
-# resp &lt;- content(res, as = &quot;parsed&quot;, encoding = &quot;utf8&quot;)
-
-
-# URLdecode(&quot;&quot;)
-# URLdecode(myUrl)</code></pre>
+# data size
+sum((fileName %&gt;% file.info)$size)</code></pre>
 </div>
 </div>
 
