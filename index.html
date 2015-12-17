@@ -184,7 +184,7 @@ get(&quot;a[1]&quot;) == 2   # TRUE</code></pre>
 <div id="setting-env" class="section level3">
 <h3>Setting env</h3>
 <pre class="r"><code>head(ls())</code></pre>
-<pre><code>## [1] &quot;2330.TW&quot; &quot;a&quot;       &quot;a[1]&quot;    &quot;AM_Odd&quot;  &quot;ans1&quot;    &quot;ans2&quot;</code></pre>
+<pre><code>## [1] &quot;2330.TW&quot; &quot;a&quot;       &quot;a[1]&quot;    &quot;aa&quot;      &quot;AM_Odd&quot;  &quot;ans1&quot;</code></pre>
 <pre class="r"><code>getwd()</code></pre>
 <pre><code>## [1] &quot;/home/gg/works/RCrawler/RCrawlerCrashCourse&quot;</code></pre>
 <pre class="r"><code># setwd(&quot;~/works/RCrawler/RCrawlerCrashCourse&quot;)
@@ -205,14 +205,36 @@ ifelse(Today %in% RCourseDate,&quot;開薰學R語言&quot;,&quot;今日打東東
 <pre class="r"><code>NormalSampleData &lt;- function(N,mu){rnorm(N)+ mu}
 system.time(for(i in 1:1e5) NormalSampleData(100,0))</code></pre>
 <pre><code>##    user  system elapsed 
-##   1.034   0.000   1.032</code></pre>
+##    0.98    0.00    0.98</code></pre>
 <pre class="r"><code>system.time(for(i in 1:1e5) do.call(NormalSampleData, list(100,0)))</code></pre>
 <pre><code>##    user  system elapsed 
-##   1.176   0.000   1.163</code></pre>
+##   1.263   0.000   1.257</code></pre>
 </div>
 </div>
 <div id="demo-connector-parser" class="section level2">
 <h2>[DEMO] Connector &amp; Parser</h2>
+<div id="get" class="section level3">
+<h3>GET</h3>
+</div>
+<div id="post-method" class="section level3">
+<h3>POST Method</h3>
+<pre class="r"><code>## Syntax 1
+httr::POST(URL, body= list(para1=paraVal1,para2=paraVal2))
+## Syntax 2
+httr::POST(URL, body= &quot;para1=paraVal1_encode&amp;para2=paraVal2_encode&quot;)
+## Syntax 3
+httr::POST(URL, body= &quot;para1=paraVal1_encode&amp;para2=paraVal2_encode&quot;, encode=&quot;form&quot;)</code></pre>
+</div>
+<div id="appendix-magrittr" class="section level3">
+<h3>[Appendix] magrittr</h3>
+<p>Pipe argument to right-hand side with <code>%&gt;%</code></p>
+<ul>
+<li>x <code>%&gt;%</code> f is equivalent to f(x)</li>
+<li>x <code>%&gt;%</code> f(y) is equivalent to f(x, y)</li>
+<li>x <code>%&gt;%</code> f %&gt;% g %&gt;% h is equivalent to h(g(f(x)))</li>
+<li>x <code>%&gt;%</code> f(y, .) is equivalent to f(y, x)</li>
+<li>x <code>%&gt;%</code> f(y, z = .) is equivalent to f(y, z = x)</li>
+</ul>
 <ol style="list-style-type: decimal">
 <li>Yahoo Stock <a href="http://tw.stock.yahoo.com/d/s/major_2451.html" class="uri">http://tw.stock.yahoo.com/d/s/major_2451.html</a></li>
 </ol>
@@ -229,8 +251,61 @@ doc_str &lt;- content(res, type = &quot;text&quot;, encoding = &quot;big5&quot;)
 data_table &lt;- doc_str %&gt;% read_html(encoding = &quot;utf8&quot;) %&gt;% html_nodes(xpath = &quot;//table[1]//table[2]&quot;) %&gt;% html_table(header=TRUE)
 
 # View(data_table[[1]])</code></pre>
-<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
+<ol start="2" style="list-style-type: decimal">
+<li>公開資訊觀測站</li>
+</ol>
+<pre class="r"><code>library(httr)
+library(rvest)
+## Connector
+res &lt;- POST(&quot;http://mops.twse.com.tw/mops/web/ajax_t51sb01&quot;,body = &quot;encodeURIComponent=1&amp;step=1&amp;firstin=1&amp;TYPEK=sii&amp;code=&quot;)
+doc_str &lt;- content(res, &quot;text&quot;, encoding = &quot;utf8&quot;)
+write(doc_str, file = &quot;mops.html&quot;)
+## Parser
+data_table &lt;- doc_str %&gt;% read_html(encoding = &quot;utf8&quot;) %&gt;% html_nodes(xpath = &quot;//table[2]&quot;) %&gt;% html_table(header=TRUE)
+
+# View(data_table)</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>銀行局</li>
+</ol>
+<pre class="r"><code>library(rvest)
+library(httr)
+bankingUrl &lt;- &quot;http://www.banking.gov.tw/ch/home.jsp?id=192&amp;parentpath=0,4&amp;mcustomize=multimessage_view.jsp&amp;dataserno=21207&amp;aplistdn=ou=disclosure,ou=multisite,ou=chinese,ou=ap_root,o=fsc,c=tw&amp;toolsflag=Y&amp;dtable=Disclosure&quot;
+
+res &lt;- GET(bankingUrl,set_cookies(&quot;cookiesession1=0F51E397POLJ4NQTC2CT7TGE8VBT033D; JSESSIONID=13A259B7048E0A96163333DA9D9BE428; fontsize=80%; _ga=GA1.3.807240144.1448956489; _gat=1&quot;))
+doc_str &lt;- content(res, type = &quot;text&quot;, encoding = &quot;utf8&quot;)
+
+# parser with URL
+doc &lt;- htmlParse(doc_str)
+library(rvest)
+html &lt;- read_html(doc_str)
+monthsUrl &lt;- html_nodes(html,&quot;table[summary='信用卡重要業務及財務資訊揭露'] a[href]&quot;)
+# get value 
+html_text(monthsUrl)
+html_attr(monthsUrl, name = &quot;href&quot;)
+# pipe to url
+monthsUrlList &lt;- content(res, type = &quot;text&quot;, encoding = &quot;utf8&quot;) %&gt;% read_html %&gt;% html_nodes(&quot;table[summary='信用卡重要業務及財務資訊揭露'] a&quot;) %&gt;% html_attr(&quot;href&quot;)
+monthsUrlList &lt;- ifelse(substr(monthsUrlList,1,1)=='/',paste0(&quot;http://www.fsc.gov.tw&quot;,monthsUrlList),monthsUrlList)
+
+# library(stringr)
+dataDir &lt;- &quot;/home/gg/data/bankingCreditCard/&quot;
+fileName &lt;- paste0(dataDir,fileName &lt;- sub(&quot;&amp;flag=doc$&quot;,&quot;&quot;,sub(&quot;.*file=/&quot;, &quot;&quot;, monthsUrlList)))
+# download.file(monthsUrlList, destfile = paste0(&quot;/home/gg/data/bankingCreditCard/&quot;,fileName &lt;- sub(&quot;&amp;flag=doc$&quot;,&quot;&quot;,sub(&quot;.*file=/&quot;, &quot;&quot;, monthsUrlList[1:2]))), mode=&quot;wb&quot;)
+system.time(
+  for (i in 1:length(fileName)){
+    print(monthsUrlList[i])
+    try(download.file(url = monthsUrlList[i], destfile = fileName[i], mode = &quot;w&quot;), silent = TRUE)
+  }
+)
+sum((fileName %&gt;% file.info)$size)
+
+# downUrl &lt;- &quot;http://www.fsc.gov.tw/fckdowndoc?file=/10401%E4%BF%A1%E7%94%A8%E5%8D%A1%E9%87%8D%E8%A6%81%E8%B3%87%E8%A8%8A%E6%8F%AD%E9%9C%B2.xlsx&amp;amp;flag=doc&quot;
+# res &lt;- GET(downUrl, set_cookies(&quot;cookiesession1=0F51E398BEEWSI59SDWDYRPYSQEYAAD7;Path=/;HttpOnly&quot;))
+# resp &lt;- content(res, as = &quot;parsed&quot;, encoding = &quot;utf8&quot;)
+
+
+# URLdecode(&quot;&quot;)
+# URLdecode(myUrl)</code></pre>
+</div>
 </div>
 
 
