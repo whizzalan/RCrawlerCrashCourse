@@ -213,8 +213,12 @@ system.time(for(i in 1:1e5) NormalSampleData(100,0))</code></pre>
 </div>
 <div id="demo-connector-parser" class="section level2">
 <h2>[DEMO] Connector &amp; Parser</h2>
-<div id="get" class="section level3">
-<h3>GET</h3>
+<div id="get-method" class="section level3">
+<h3>GET Method</h3>
+<ul>
+<li>URL?var1=val1&amp;var2=val2</li>
+</ul>
+<pre class="r"><code>httr::GET(URL)</code></pre>
 </div>
 <div id="post-method" class="section level3">
 <h3>POST Method</h3>
@@ -235,6 +239,10 @@ httr::POST(URL, body= &quot;para1=paraVal1_encode&amp;para2=paraVal2_encode&quot
 <li>x <code>%&gt;%</code> f(y, .) is equivalent to f(y, x)</li>
 <li>x <code>%&gt;%</code> f(y, z = .) is equivalent to f(y, z = x)</li>
 </ul>
+</div>
+</div>
+<div id="case-study" class="section level2">
+<h2>Case Study</h2>
 <ol style="list-style-type: decimal">
 <li>Yahoo Stock <a href="http://tw.stock.yahoo.com/d/s/major_2451.html" class="uri">http://tw.stock.yahoo.com/d/s/major_2451.html</a></li>
 </ol>
@@ -314,7 +322,6 @@ system.time(
 
 ## data size
 sum((fileName %&gt;% file.info)$size)</code></pre>
-</div>
 </div>
 
 

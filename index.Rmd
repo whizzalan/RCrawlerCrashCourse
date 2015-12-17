@@ -141,10 +141,12 @@ system.time(for(i in 1:1e5) do.call(NormalSampleData, list(100,0)))
 
 ## [DEMO] Connector & Parser
 
-### GET
+### GET Method
+
+ - URL?var1=val1&var2=val2
 
 ```{r GET, eval = FALSE}
-
+httr::GET(URL)
 ```
 
 ### POST Method
@@ -167,6 +169,8 @@ Pipe argument to right-hand side with `%>%`
 - x `%>%` f %>% g %>% h is equivalent to h(g(f(x)))
 - x `%>%` f(y, .) is equivalent to f(y, x)
 - x `%>%` f(y, z = .) is equivalent to f(y, z = x)
+
+## Case Study 
 
 1. Yahoo Stock <http://tw.stock.yahoo.com/d/s/major_2451.html>
 
