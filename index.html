@@ -247,9 +247,18 @@ res &lt;- GET(Target_URL)
 doc_str &lt;- content(res, type = &quot;text&quot;, encoding = &quot;big5&quot;)
 
 ## Parser
-data_table &lt;- doc_str %&gt;% read_html(encoding = &quot;utf8&quot;) %&gt;% html_nodes(xpath = &quot;//table[1]//table[2]&quot;) %&gt;% html_table(header=TRUE)
+if (.Platform$OS.type == &quot;windows&quot;){
+  Sys.setlocale(category='LC_ALL', locale='C')
+  data_table &lt;- doc_str %&gt;% read_html(encoding = &quot;big-5&quot;) %&gt;% html_nodes(xpath = &quot;//table[1]//table[2]&quot;) %&gt;% html_table(header=TRUE)
+  Sys.setlocale(category='LC_ALL', locale='cht')
+  data_table &lt;- apply(data_table[[1]],2,function(x) iconv(x,from = &quot;utf8&quot;))
+  colnames(data_table) &lt;- iconv(colnames(data_table), from = &quot;utf8&quot;)
+}  else{
+  data_table &lt;- doc_str %&gt;% read_html(encoding = &quot;big-5&quot;) %&gt;% html_nodes(xpath = &quot;//table[1]//table[2]&quot;) %&gt;% html_table(header=TRUE)
+  data_table &lt;- data_table[[1]]
+}
 
-# View(data_table[[1]])</code></pre>
+# View(data_table)</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>公開資訊觀測站 <a href="http://mops.twse.com.tw/mops/web/t51sb01" class="uri">http://mops.twse.com.tw/mops/web/t51sb01</a></li>
 </ol>
@@ -259,8 +268,18 @@ library(rvest)
 res &lt;- POST(&quot;http://mops.twse.com.tw/mops/web/ajax_t51sb01&quot;,body = &quot;encodeURIComponent=1&amp;step=1&amp;firstin=1&amp;TYPEK=sii&amp;code=&quot;)
 doc_str &lt;- content(res, &quot;text&quot;, encoding = &quot;utf8&quot;)
 write(doc_str, file = &quot;mops.html&quot;)
+
 ## Parser
-data_table &lt;- doc_str %&gt;% read_html(encoding = &quot;utf8&quot;) %&gt;% html_nodes(xpath = &quot;//table[2]&quot;) %&gt;% html_table(header=TRUE)
+if (.Platform$OS.type == &quot;windows&quot;){
+  Sys.setlocale(category='LC_ALL', locale='C')
+  data_table &lt;- doc_str %&gt;% read_html(encoding = &quot;big-5&quot;) %&gt;% html_nodes(xpath = &quot;//table[2]&quot;) %&gt;% html_table(header=TRUE)
+  Sys.setlocale(category='LC_ALL', locale='cht')
+  data_table &lt;- apply(data_table[[1]],2,function(x) iconv(x,from = &quot;utf8&quot;))
+  colnames(data_table) &lt;- iconv(colnames(data_table), from = &quot;utf8&quot;)
+}  else{
+  data_table &lt;- doc_str %&gt;% read_html(encoding = &quot;big-5&quot;) %&gt;% html_nodes(xpath = &quot;//table[2]&quot;) %&gt;% html_table(header=TRUE)
+  data_table &lt;- data_table[[1]]
+}
 
 # View(data_table)</code></pre>
 <ol start="3" style="list-style-type: decimal">
